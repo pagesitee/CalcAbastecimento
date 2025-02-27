@@ -5,6 +5,9 @@
     "display": "standalone",
     "background_color": "#2E7D32",
     "theme_color": "#81C784",
+    "scope": "/",
+    "orientation": "portrait",
+    "description": "Uma calculadora para ajudar na escolha do melhor combustível, entre Etanol e Gasolina.",
     "icons": [
         {
             "src": "/Imagens/icon-192.png",
