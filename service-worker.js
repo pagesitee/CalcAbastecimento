@@ -31,10 +31,27 @@ self.addEventListener("activate", event => {
     self.clients.claim();
 });
 
+// Cache a resposta e caia para a rede se não houver no cache
 self.addEventListener("fetch", event => {
     event.respondWith(
         caches.match(event.request).then(response => {
-            return response || fetch(event.request);
+            if (response) {
+                // Se o recurso estiver no cache, use ele
+                return response;
+            }
+            // Caso contrário, faça a requisição de rede
+            return fetch(event.request).then(networkResponse => {
+                // Se a resposta da rede for válida, coloque no cache
+                if (networkResponse && networkResponse.status === 200) {
+                    caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, networkResponse.clone());
+                    });
+                }
+                return networkResponse;
+            }).catch(() => {
+                // Caso a rede falhe, se você precisar de um fallback (como uma página offline), pode adicionar aqui
+                return caches.match('/offline.html'); // Exemplo de fallback
+            });
         })
     );
 });
